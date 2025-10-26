@@ -76,6 +76,8 @@ namespace practice_7_api.Service
                 status_id = 1
             };
 
+            book.count -= 1;
+
             await _context.AddAsync(rent_book);
             await _context.SaveChangesAsync();
 
@@ -209,6 +211,12 @@ namespace practice_7_api.Service
             }
 
             existing_rent.status_id = 2;
+
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.book_id == existing_rent.book_id);
+            if (book != null)
+            {
+                book.count += 1;
+            }
 
             await _context.SaveChangesAsync();
 

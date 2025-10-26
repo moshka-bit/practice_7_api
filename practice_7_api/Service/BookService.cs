@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using practice_7_api.DatabaseContext;
 using practice_7_api.Interfaces;
 using practice_7_api.Models;
 using practice_7_api.Requests;
 using System.Reflection.PortableExecutable;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace practice_7_api.Service
 {
@@ -171,9 +174,9 @@ namespace practice_7_api.Service
 
         }   
 
-        public async Task<IActionResult> GetBookByTitleAndAuthorAsync(string title, int author_id)
+        public async Task<IActionResult> GetBookByTitleAndAuthorAsync(string title, string author_name)
         {
-            if (string.IsNullOrEmpty(title) && author_id == 0)
+            if (string.IsNullOrEmpty(title) && string.IsNullOrEmpty(author_name))
             {
                 return new BadRequestObjectResult(new
                 {
@@ -182,36 +185,15 @@ namespace practice_7_api.Service
                 });
             }
 
-            var query = _context.Books.AsQueryable();
-
-            if (author_id > 0)
-            {
-                var authorExists = await _context.Athores.AnyAsync(a => a.author_id == author_id);
-                if (!authorExists)
-                {
-                    return new NotFoundObjectResult(new
-                    {
-                        status = false,
-                        message = "Нет такого автора"
-                    });
-                }
-                
-                query = query.Where(b => b.author_id == author_id);
-            }
-
-            if (!string.IsNullOrEmpty(title))
-            {
-                query = query.Where(b => b.book_name.ToLower().Contains(title.ToLower()));
-            }
-
-            var books = await query.ToListAsync();
+            var books = _context.Books.Where(x => x.Author.author_last_name.ToLower().Contains(author_name.ToLower()) || 
+            x.book_name.ToLower().Contains(title.ToLower()));
 
             if (!books.Any())
             {
                 return new NotFoundObjectResult(new
                 {
                     status = false,
-                    message = "Нет книги с таким писателем и названием"
+                    message = "Нет таких книг"
                 });
             }
 

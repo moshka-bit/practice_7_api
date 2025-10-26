@@ -9,7 +9,7 @@ namespace practice_7_api.Interfaces
         Task<IActionResult> CreateNewBookAsync(CreateNewBook newBook);
         Task<IActionResult> GetBookByIdAsync(int id);
         Task<IActionResult> GetBooksByGenreAsync(int id);
-        Task<IActionResult> GetBookByTitleAndAuthorAsync(string title, int author_id);
+        Task<IActionResult> GetBookByTitleAndAuthorAsync(string title, string author_name);
         Task<IActionResult> GetBookCountById(int id);
         Task<IActionResult> PutBookAsync(int id, UpdateBook updatedBook);
         Task<IActionResult> DeleteBookAsync(int id);

@@ -45,9 +45,9 @@ namespace practice_7_api.Controllers
         [HttpGet]
         [Route("GetBookByTitleAndAuthor")]
 
-        public async Task<IActionResult> GetBookByTitleAsync(string title, int author_id)
+        public async Task<IActionResult> GetBookByTitleAsync(string title, string author_name)
         {
-            return await _Service1.GetBookByTitleAndAuthorAsync(title, author_id);
+            return await _Service1.GetBookByTitleAndAuthorAsync(title, author_name);
         }
 
         [HttpGet]
